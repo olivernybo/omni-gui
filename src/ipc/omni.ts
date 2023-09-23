@@ -53,7 +53,7 @@ export class Omni implements IIPC {
 					apiKey: key.toString(),
 				});
 
-				openai.chat.completions.create({
+				const response = await openai.chat.completions.create({
 					messages: [
 						//...systemBehavior,
 						{
@@ -62,22 +62,24 @@ export class Omni implements IIPC {
 						},
 					],
 					model: 'gpt-3.5-turbo'
-				}).then(async (response) => {
-					const responseText = response.choices[0].message.content;
+				}).catch(() => null);
 
-					// open save dialog
-					const { filePath } = await dialog.showSaveDialog({
-						defaultPath: 'omni.txt',
-						filters: [
-							{ name: 'Text Files', extensions: ['txt'] },
-						],
-						message: 'Save Omni response',
-					});
+				if (!response) return;
 
-					if (filePath) {
-						fs.writeFileSync(filePath, responseText);
-					}
+				const responseText = response.choices[0].message.content;
+
+				// open save dialog
+				const { filePath } = await dialog.showSaveDialog({
+					defaultPath: 'omni.txt',
+					filters: [
+						{ name: 'Text Files', extensions: ['txt'] },
+					],
+					message: 'Save Omni response',
 				});
+
+				if (filePath) {
+					fs.writeFileSync(filePath, responseText);
+				}
 			}
 		}
 	}

@@ -1,14 +1,9 @@
-import fs from 'fs';
 import path from 'path';
 
 import dotenv from 'dotenv';
 import { Environment } from 'env-types';
 
-import { app, BrowserWindow, ipcMain, dialog } from 'electron';
-import settings from 'electron-settings';
-
-import Microphone from 'node-microphone';
-import Whisper from 'whisper-nodejs';
+import { app, BrowserWindow } from 'electron';
 
 import * as ipc from './ipc';
 
@@ -33,7 +28,9 @@ function createWindow() {
 	mainWindow.loadFile(path.join(__dirname, '../index.html'));
 
 	// Open the DevTools.
-	mainWindow.webContents.openDevTools();
+	if (Environment.OPEN_DEV_TOOLS) {
+		mainWindow.webContents.openDevTools();
+	}
 }
 
 // This method will be called when Electron has finished
