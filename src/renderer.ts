@@ -32,9 +32,29 @@ document.querySelector('.key').addEventListener('click', () => {
 	});
 });
 
-document.querySelector('.circle').addEventListener('click', () => {
+const circle = document.querySelector('.circle');
+circle.addEventListener('click', () => {
 	// toggle active class
-	const isActive = document.querySelector('.circle').classList.toggle('active');
+	const isActive = circle.classList.toggle('active');
 
-	ipcRenderer.invoke('omni:listen', isActive);
+	// Get checkbox
+	const checkbox = document.querySelector('.mode') as HTMLInputElement;
+
+	const isTranslating = !checkbox.checked;
+
+	checkbox.disabled = isActive;
+
+	// If translating, add translating class, else add omni class
+	if (isTranslating) {
+		circle.classList.add('translating');
+	} else {
+		circle.classList.add('omni');
+	}
+
+	// If not active, remove translating and omni classes
+	if (!isActive) {
+		circle.classList.remove('translating', 'omni');
+	}
+
+	ipcRenderer.invoke('omni:listen', isActive, isTranslating);
 });
