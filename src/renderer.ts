@@ -9,11 +9,11 @@ import { ipcRenderer } from 'electron';
 import Swal from 'sweetalert2';
 
 document.querySelector('.close').addEventListener('click', () => {
-	ipcRenderer.invoke('close');
+	ipcRenderer.invoke('app:close');
 });
 
 document.querySelector('.minimize').addEventListener('click', () => {
-	ipcRenderer.invoke('minimize');
+	ipcRenderer.invoke('app:minimize');
 });
 
 document.querySelector('.key').addEventListener('click', () => {
@@ -27,7 +27,7 @@ document.querySelector('.key').addEventListener('click', () => {
 		confirmButtonText: 'Submit',
 	}).then((result) => {
 		if (result.isConfirmed) {
-			ipcRenderer.invoke('key', result.value);
+			ipcRenderer.invoke('settings:set', 'key', result.value);
 		}
 	});
 });
@@ -36,5 +36,5 @@ document.querySelector('.circle').addEventListener('click', () => {
 	// toggle active class
 	const isActive = document.querySelector('.circle').classList.toggle('active');
 
-	ipcRenderer.invoke('listen', isActive);
+	ipcRenderer.invoke('omni:listen', isActive);
 });

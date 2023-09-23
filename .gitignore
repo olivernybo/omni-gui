@@ -3,3 +3,4 @@ dist
 out/
 Output/
 *.wav
+.env
