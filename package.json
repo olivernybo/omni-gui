@@ -1,0 +1,32 @@
+{
+  "name": "omni-gui",
+  "version": "1.0.0",
+  "description": "GUI for Omni",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run build && electron-forge start",
+    "package": "npm run build && electron-forge package",
+    "make": "npm run build && npm run package && iscc inno.iss"
+  },
+  "author": "Oliver Nybo <oliver@nybo.dev>",
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-forge/cli": "^6.4.2",
+    "@electron-forge/maker-deb": "^6.4.2",
+    "@electron-forge/maker-rpm": "^6.4.2",
+    "@electron-forge/maker-squirrel": "^6.4.2",
+    "@electron-forge/maker-zip": "^6.4.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
+    "@types/node-microphone": "^0.1.1",
+    "electron": "^26.2.2",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "electron-settings": "^4.0.2",
+    "electron-squirrel-startup": "^1.0.0",
+    "node-microphone": "^0.1.6",
+    "sweetalert2": "^11.7.28",
+    "whisper-nodejs": "^1.0.0"
+  }
+}

@@ -1,0 +1,159 @@
+:root {
+	--bg-color: #222;
+	--text-color: #fff;
+
+	--title-bar-bg-color: #333;
+	--title-bar-text-color: #fff;
+	--title-bar-height: 30px;
+
+	--title-bar-close-button-color: transparent;
+	--title-bar-close-button-hover-color: rgba(255, 0, 0, 0.719);
+	--title-bar-close-button-active-color: rgba(255, 0, 0, 0.919);
+
+	--title-bar-minimize-button-color: transparent;
+	--title-bar-minimize-button-hover-color: rgba(7, 163, 20, 0.719);
+	--title-bar-minimize-button-active-color: rgba(7, 163, 20, 0.919);
+
+	--title-bar-key-button-color: transparent;
+	--title-bar-key-button-hover-color: rgba(255, 81, 7, 0.869);
+	--title-bar-key-button-active-color: rgba(255, 81, 7, 0.969);
+
+	--pulse-color: rgba(186, 5, 5, 0.698);
+
+	--font-family: Arial, Helvetica, sans-serif;
+}
+
+html, body {
+	/* A nice, dark background */
+	background-color: var(--bg-color);
+	color: var(--text-color);
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	width: 100%;
+	height: 100%;
+	font-family: var(--font-family);
+}
+
+.window-controls {
+	background-color: var(--title-bar-bg-color);
+	color: var(--title-bar-text-color);
+	height: var(--title-bar-height);
+	width: 95%;
+	margin: 5px auto;
+	padding: 5px;
+    -webkit-app-region: drag;
+}
+
+.window-controls button {
+	border: none;
+	color: var(--title-bar-text-color);
+	height: var(--title-bar-height);
+	width: var(--title-bar-height);
+	margin: 0 5px;
+	float: right;
+	-webkit-app-region: no-drag;
+}
+
+.window-controls button:hover {
+	cursor: pointer;
+	transition: background-color 0.2s ease-in-out;
+}
+
+.window-controls button:active {
+	cursor: pointer;
+}
+
+.window-controls button.key {
+	float: left;
+	background-color: var(--title-bar-key-button-color);
+}
+
+.window-controls button.key:hover {
+	background-color: var(--title-bar-key-button-hover-color);
+}
+
+.window-controls button.key:active {
+	background-color: var(--title-bar-key-button-active-color);
+}
+
+.window-controls button.close {
+	background-color: var(--title-bar-close-button-color);
+}
+
+.window-controls button.close:hover {
+	background-color: var(--title-bar-close-button-hover-color);
+}
+
+.window-controls button.close:active {
+	background-color: var(--title-bar-close-button-active-color);
+}
+
+.window-controls button.minimize {
+	background-color: var(--title-bar-minimize-button-color);
+}
+
+.window-controls button.minimize:hover {
+	background-color: var(--title-bar-minimize-button-hover-color);
+}
+
+.window-controls button.minimize:active {
+	background-color: var(--title-bar-minimize-button-active-color);
+}
+
+.header {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	margin-top: 100px;
+}
+
+.loader {
+	width: 100%;
+	height: 60%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.loader .circle {
+	width: 250px;
+	height: 250px;
+	border-radius: 50%;
+	background-color: var(--text-color);
+	margin: 0 5px;
+	float: left;
+}
+
+.loader .circle:nth-child(1) {
+	animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes scale {
+	0% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.5);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+.active {
+	animation: pulse 1s ease-in-out infinite, scale 3s ease-in-out infinite !important;
+	background-color: var(--pulse-color) !important;
+}
+
+@keyframes pulse {
+	0% {
+		opacity: 0.5;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.5;
+	}
+}

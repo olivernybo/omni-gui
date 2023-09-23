@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8" />
+	<title>Omni</title>
+	<!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+	<!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+	<meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" /> -->
+	<meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+
+	<link rel="stylesheet" href="./index.css" />
+</head>
+
+<body>
+	<nav>
+		<!-- Hide and close buttons -->
+		<div class="window-controls">
+			<button class="key">&#128477;</button>
+			<button class="close">&#10006;</button>
+			<button class="minimize">&#8212;</button>
+		</div>
+	</nav>
+
+	<h1 class="header">Omni</h1>
+
+	<!-- Circle ai spinner -->
+	<div class="loader">
+		<div class="circle"></div>
+	</div>
+
+	<!-- You can also require other files to run in this process -->
+	<script>
+		// here we import our files
+		require('./dist/renderer.js');
+	</script>
+</body>
+
+</html>
