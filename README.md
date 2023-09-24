@@ -6,9 +6,9 @@ This is a fun project that aims to replace my current smart assistant with a mor
 ## Features
 - [X] Modular design. I can easily add new features to the assistant. The system will automatically detect the new methods and add them to the assistant.
 - [X] Voice input. The assistant can be controlled using voice commands.
-- [] Text input. The assistant can be controlled using text commands.
-- [] Voice output. The assistant can respond in voice.
-- [] Wake word. The assistant can be activated using a wake word.
+- [ ] Text input. The assistant can be controlled using text commands.
+- [ ] Voice output. The assistant can respond in voice.
+- [ ] Wake word. The assistant can be activated using a wake word.
 
 ## Requirements
 - SoX
