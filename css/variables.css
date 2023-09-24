@@ -1,0 +1,25 @@
+:root {
+	--bg-color: #222;
+	--text-color: #fff;
+
+	--title-bar-bg-color: #333;
+	--title-bar-text-color: #fff;
+	--title-bar-height: 30px;
+
+	--title-bar-close-button-color: transparent;
+	--title-bar-close-button-hover-color: rgba(255, 0, 0, 0.719);
+	--title-bar-close-button-active-color: rgba(255, 0, 0, 0.919);
+
+	--title-bar-minimize-button-color: transparent;
+	--title-bar-minimize-button-hover-color: rgba(7, 163, 20, 0.719);
+	--title-bar-minimize-button-active-color: rgba(7, 163, 20, 0.919);
+
+	--title-bar-key-button-color: transparent;
+	--title-bar-key-button-hover-color: rgba(255, 81, 7, 0.869);
+	--title-bar-key-button-active-color: rgba(255, 81, 7, 0.969);
+
+	--translate-color: rgba(186, 5, 5, 0.698);
+	--omni-color: rgba(20, 115, 10, 0.698);
+
+	--font-family: Arial, Helvetica, sans-serif;
+}
