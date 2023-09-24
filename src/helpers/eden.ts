@@ -1,32 +1,3 @@
-/*
-const axios = require('axios').default;
-
-const options = {
-  method: 'POST',
-  url: 'https://api.edenai.run/v2/audio/text_to_speech',
-  headers: {
-    authorization: 'Bearer 🔑 Your_API_Key',
-  },
-  data: {
-    show_original_response: false,
-    fallback_providers: '',
-    providers: 'amazon,google,ibm,microsoft',
-    language: 'fr',
-    text: 'Bonjour Je m'appelle Jane',
-    option: 'FEMALE',
-  },
-};
-
-axios
-  .request(options)
-  .then((response) => {
-    console.log(response.data);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
-*/
-
 import fetch from 'node-fetch';
 import settings from 'electron-settings';
 
