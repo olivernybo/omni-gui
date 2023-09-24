@@ -5,18 +5,18 @@ export class Music implements IModule {
 	description: string = 'Module for managing music';
 
 	play(content: string) {
-		console.log(`playing ${content} music`);
+		return `Playing ${content} music`;
 	}
 
 	pause() {
-		console.log('pausing music');
+		return 'Pausing music';
 	}
 
 	resume() {
-		console.log('resuming music');
+		return 'Resuming music';
 	}
 
 	stop() {
-		console.log('stopping music');
+		return 'Stopping music';
 	}
 }

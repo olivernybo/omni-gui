@@ -31,7 +31,7 @@ import fetch from 'node-fetch';
 import settings from 'electron-settings';
 
 export class Eden {
-	static async tts(text) {
+	static async tts(text): Promise<string> {
 		const key = await settings.get('eden');
 
 		const response = await fetch('https://api.edenai.run/v2/audio/text_to_speech', {

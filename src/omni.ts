@@ -126,21 +126,6 @@ export class Omni {
 
 				const responseText = response.choices[0].message.content;
 
-				// const match = responseText.match(Omni.paramsRegex);
-
-				// if (!match) {
-				// 	const tts = await Eden.tts('Could not parse response');
-
-				// 	console.log(responseText);
-
-				// 	// send it to ipc
-				// 	BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
-
-				// 	return;
-				// }
-
-				// const { handle, method, params } = match.groups;
-
 				const handleMatch = responseText.match(Omni.handleRegex);
 
 				const handle = handleMatch?.groups?.handle;
@@ -158,7 +143,6 @@ export class Omni {
 
 				const methodMatch = responseText.match(Omni.paramsRegex);
 
-				// const { handle: handle2, method, params } = methodMatch?.groups;
 				const handle2 = methodMatch?.groups?.handle;
 				const method = methodMatch?.groups?.method;
 				const params = methodMatch?.groups?.params;
@@ -191,14 +175,7 @@ export class Omni {
 					return;
 				}
 
-				// const paramsArray = params ? params.split(', ').map(param => {
-				// 	// remove quotes if they are in the first and last position
-				// 	if (param[0] === '"' && param[param.length - 1] === '"') {
-				// 		return param.substring(1, param.length - 1);
-				// 	}
-				// }) : [];
-
-				// await mod[method](...paramsArray);
+				let tts: string;
 
 				if (method) {
 					console.log(`Found method: ${method}`);
@@ -210,10 +187,16 @@ export class Omni {
 						}
 					}) : [];
 
-					await mod[method](...paramsArray);
-				}
+					const response = await mod[method](...paramsArray);
 
-				const tts = await Eden.tts(message);
+					if (typeof response === 'string') {
+						tts = await Eden.tts(response);
+					}
+				}
+				
+				if (!tts) {
+					tts = await Eden.tts(message);
+				}
 
 				// send it to ipc
 				BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
