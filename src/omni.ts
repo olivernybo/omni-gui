@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-import { dialog } from 'electron';
+import { BrowserWindow, dialog, ipcMain } from 'electron';
 import settings from 'electron-settings';
 
 import OpenAI from 'openai';
@@ -10,6 +10,7 @@ import Microphone from 'node-microphone';
 import { IModule } from './interfaces/IModule';
 import { IBehavior } from './interfaces/IBehavior';
 import { Music } from './modules/music';
+import { Eden } from './helpers/eden';
 
 export class Omni {
 	static tempAudioFile = 'test.wav';
@@ -21,7 +22,11 @@ export class Omni {
 
 	static modules: { [key: string]: IModule };
 
-	static responseRegex = /handle: (?<handle>.*)[.]{1}(?<method>[a-zA-Z]*)([(](?<params>["].*["])[)])?\nresponse: (?<response>.*)/;
+	static handleRegex = /handle: (?<handle>.*)/;
+
+	static paramsRegex = /handle: (?<handle>.*)([.]{1}(?<method>[a-zA-Z]*)([(](?<params>["].*["])[)])?)/;
+	
+	static messageRegex = /response: (?<message>.*)/;
 
 	static async initialize() {
 		Omni.modules = {};
@@ -37,7 +42,8 @@ export class Omni {
 			'2. Respond in the following format: "handle: $handle.$method("$param", "$param")\nresponse: $response"',
 			'2.1. The handle will be used in a program, that will do something with the response',
 			'2.2. "handle: " and "response: " must be included in the response and must always be in English',
-			'If you cannot perform a task, look for a module that can. If you cannot find one, respond with "handle: omni.error\nresponse: I cannot do that"',
+			//'If you cannot perform a task, look for a module that can. If you cannot find one, respond with "handle: omni.error\nresponse: I cannot do that"',
+			'You may never respond with a handle or method that is not in the list of modules',
 			'Here is a list of all modules and their methods:'
 		].map(content => ({ role: 'system', content }));
 
@@ -91,25 +97,19 @@ export class Omni {
 	
 			if (isTranslating) {
 				const translation = await whisper.translate(Omni.tempAudioFile, 'whisper-1', 'en');
-	
-				// open save dialog
-				const { filePath } = await dialog.showSaveDialog({
-					defaultPath: 'translation.txt',
-					filters: [
-						{ name: 'Text Files', extensions: ['txt'] },
-					],
-					message: 'Save Translation',
-				});
-		
-				if (filePath) {
-					fs.writeFileSync(filePath, translation);
-				}
+
+				const tts = await Eden.tts(translation);
+
+				// send it to ipc
+				BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
 			} else {
 				const transcript = await whisper.transcribe(Omni.tempAudioFile, 'whisper-1');
 
 				const openai = new OpenAI({
 					apiKey: key.toString(),
 				});
+
+				console.log(transcript);
 
 				const response = await openai.chat.completions.create({
 					messages: [
@@ -126,39 +126,97 @@ export class Omni {
 
 				const responseText = response.choices[0].message.content;
 
-				const match = responseText.match(Omni.responseRegex);
+				// const match = responseText.match(Omni.paramsRegex);
 
-				if (!match) return;
+				// if (!match) {
+				// 	const tts = await Eden.tts('Could not parse response');
 
-				const { handle, method, params, response: message } = match.groups;
+				// 	console.log(responseText);
 
-				if (!handle || !method || !message) return;
+				// 	// send it to ipc
+				// 	BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
 
-				const mod = Omni.modules[handle];
+				// 	return;
+				// }
 
-				if (!mod) return;
+				// const { handle, method, params } = match.groups;
 
-				const paramsArray = params ? params.split(', ').map(param => {
-					// remove quotes if they are in the first and last position
-					if (param[0] === '"' && param[param.length - 1] === '"') {
-						return param.substring(1, param.length - 1);
-					}
-				}) : [];
+				const handleMatch = responseText.match(Omni.handleRegex);
 
-				await mod[method](...paramsArray);
+				const handle = handleMatch?.groups?.handle;
 
-				// open save dialog
-				const { filePath } = await dialog.showSaveDialog({
-					defaultPath: 'omni.txt',
-					filters: [
-						{ name: 'Text Files', extensions: ['txt'] },
-					],
-					message: 'Save Omni response',
-				});
+				if (!handle) {
+					const tts = await Eden.tts('Could not find handle');
 
-				if (filePath) {
-					fs.writeFileSync(filePath, message);
+					console.log(responseText);
+
+					// send it to ipc
+					BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
+
+					return;
 				}
+
+				const methodMatch = responseText.match(Omni.paramsRegex);
+
+				// const { handle: handle2, method, params } = methodMatch?.groups;
+				const handle2 = methodMatch?.groups?.handle;
+				const method = methodMatch?.groups?.method;
+				const params = methodMatch?.groups?.params;
+
+				const messageMatch = responseText.match(Omni.messageRegex);
+
+				const message = messageMatch?.groups?.message;
+
+				if (!handle || !message) {
+					const tts = await Eden.tts('Could not find handle, or message');
+
+					console.log(responseText);
+
+					// send it to ipc
+					BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
+
+					return;
+				}
+
+				const mod = Omni.modules[handle2];
+
+				if (!mod) {
+					console.log(`Could not find module: ${handle2}`);
+
+					const tts = await Eden.tts(message);
+
+					// send it to ipc
+					BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
+
+					return;
+				}
+
+				// const paramsArray = params ? params.split(', ').map(param => {
+				// 	// remove quotes if they are in the first and last position
+				// 	if (param[0] === '"' && param[param.length - 1] === '"') {
+				// 		return param.substring(1, param.length - 1);
+				// 	}
+				// }) : [];
+
+				// await mod[method](...paramsArray);
+
+				if (method) {
+					console.log(`Found method: ${method}`);
+
+					const paramsArray = params ? params.split(', ').map(param => {
+						// remove quotes if they are in the first and last position
+						if (param[0] === '"' && param[param.length - 1] === '"') {
+							return param.substring(1, param.length - 1);
+						}
+					}) : [];
+
+					await mod[method](...paramsArray);
+				}
+
+				const tts = await Eden.tts(message);
+
+				// send it to ipc
+				BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
 			}
 		}
 	}

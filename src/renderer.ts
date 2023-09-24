@@ -16,7 +16,7 @@ document.querySelector('.minimize').addEventListener('click', () => {
 	ipcRenderer.invoke('app:minimize');
 });
 
-document.querySelector('.key').addEventListener('click', () => {
+document.querySelector('#openai').addEventListener('click', () => {
 	Swal.fire({
 		title: 'Enter OpenAI API Key',
 		input: 'text',
@@ -28,6 +28,22 @@ document.querySelector('.key').addEventListener('click', () => {
 	}).then((result) => {
 		if (result.isConfirmed) {
 			ipcRenderer.invoke('settings:set', 'key', result.value);
+		}
+	});
+});
+
+document.querySelector('#eden').addEventListener('click', () => {
+	Swal.fire({
+		title: 'Enter Eden API Key',
+		input: 'text',
+		inputAttributes: {
+			autocapitalize: 'off',
+		},
+		showCancelButton: true,
+		confirmButtonText: 'Submit',
+	}).then((result) => {
+		if (result.isConfirmed) {
+			ipcRenderer.invoke('settings:set', 'eden', result.value);
 		}
 	});
 });
@@ -57,4 +73,12 @@ circle.addEventListener('click', () => {
 	}
 
 	ipcRenderer.invoke('omni:listen', isActive, isTranslating);
+});
+
+ipcRenderer.on('tts', (event, link) => {
+	const audio = new Audio();
+
+	audio.src = link;
+	
+	audio.play();
 });
