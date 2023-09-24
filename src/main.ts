@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { Environment } from 'env-types';
 
 import { app, BrowserWindow } from 'electron';
+import 'electron-reload';
 
 import * as ipc from './ipc';
 
@@ -27,9 +28,11 @@ function createWindow() {
 	// and load the index.html of the app.
 	mainWindow.loadFile(path.join(__dirname, '../index.html'));
 
-	// Open the DevTools.
-	if (Environment.OPEN_DEV_TOOLS) {
-		mainWindow.webContents.openDevTools();
+	if (Environment.DEVELOPMENT) {
+		// Open the DevTools.
+		if (Environment.OPEN_DEV_TOOLS) {
+			mainWindow.webContents.openDevTools();
+		}
 	}
 }
 

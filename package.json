@@ -5,7 +5,7 @@
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc",
-    "start": "npm run build && electron-forge start",
+    "start": "set DEVELOPMENT=true && npm run build && electron-forge start",
     "package": "npm run build && electron-forge package",
     "make": "npm run package && iscc inno.iss"
   },
@@ -20,6 +20,7 @@
     "@electron-forge/plugin-auto-unpack-natives": "^6.4.2",
     "@types/node-microphone": "^0.1.1",
     "electron": "^26.2.2",
+    "electron-reload": "^2.0.0-alpha.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
