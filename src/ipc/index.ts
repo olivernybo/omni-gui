@@ -3,12 +3,12 @@ import { ipcMain } from 'electron';
 import { IIPC } from '../interfaces/IIPC';
 import { AppControls } from './appControls';
 import { Settings } from './settings';
-import { Omni } from './omni';
+import { OmniControls } from './omniControls';
 
 export const setup = () => {
 	register(new AppControls());
 	register(new Settings());
-	register(new Omni());
+	register(new OmniControls());
 };
 
 const register = (ipc: IIPC) => {

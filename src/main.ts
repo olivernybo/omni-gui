@@ -4,12 +4,18 @@ import dotenv from 'dotenv';
 import { Environment } from 'env-types';
 
 import { app, BrowserWindow } from 'electron';
-import 'electron-reload';
+import reload from 'electron-reload';
 
 import * as ipc from './ipc';
 
 dotenv.config({ path: path.join(__dirname, '../.env') });
 Environment.load();
+
+if (Environment.DEVELOPMENT) {
+	// reload index.html and the css folder
+	reload(path.join(__dirname, '../index.html'), {});
+	reload(path.join(__dirname, '../css/**'), {});
+}
 
 function createWindow() {
 	// Create the browser window.
