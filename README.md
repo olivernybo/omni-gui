@@ -19,7 +19,7 @@ This is a fun project that aims to replace my current smart assistant with a mor
 3. Start the electron app
 
 ## Usage
-First enter your OpenAI API key by pressing the key icon in the top left corner.
+First enter your OpenAI and Eden AI keys by pressing the key icons in the top left corner.
 
 The assistant has 2 modes. Translation and O.M.N.I. mode. Translation mode is used to translate your voice to english. O.M.N.I. mode is used to control the assistant.
 
