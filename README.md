@@ -9,6 +9,9 @@ This is a fun project that aims to replace my current smart assistant with a mor
 - [ ] Text input. The assistant can be controlled using text commands.
 - [X] Voice output. The assistant can respond in voice.
 - [ ] Wake word. The assistant can be activated using a wake word.
+- [ ] Follow up. The assistant can ask follow up questions.
+- [ ] Context. The assistant can remember the context of the conversation.
+- [X] Translation. The assistant can translate my voice to english.
 
 ## Requirements
 - SoX
