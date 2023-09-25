@@ -82,3 +82,10 @@ ipcRenderer.on('tts', (event, link) => {
 	
 	audio.play();
 });
+
+ipcRenderer.on('image', (event, link) => {
+	Swal.fire({
+		title: 'Generated Image',
+		imageUrl: link,
+	});
+});

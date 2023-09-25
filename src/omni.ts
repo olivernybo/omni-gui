@@ -9,7 +9,10 @@ import Microphone from 'node-microphone';
 
 import { IModule } from './interfaces/IModule';
 import { IBehavior } from './interfaces/IBehavior';
-import { Music } from './modules/music';
+
+import { MusicModule } from './modules/music';
+import { ImageModule } from './modules/image';
+
 import { Eden } from './helpers/eden';
 
 export class Omni {
@@ -31,8 +34,11 @@ export class Omni {
 	static async initialize() {
 		Omni.modules = {};
 		
-		const musicModule = new Music;
+		const musicModule = new MusicModule;
 		Omni.modules[musicModule.handle] = musicModule;
+
+		const imageModule = new ImageModule;
+		Omni.modules[imageModule.handle] = imageModule;
 
 		Omni.systemBehavior = [
 			'Your name is Omni, short for Operational Multifunctional Network Intelligence',

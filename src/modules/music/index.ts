@@ -1,6 +1,6 @@
 import { IModule } from '../../interfaces/IModule';
 
-export class Music implements IModule {
+export class MusicModule implements IModule {
 	handle: string = 'music';
 	description: string = 'Module for managing music';
 
