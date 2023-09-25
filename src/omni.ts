@@ -25,11 +25,11 @@ export class Omni {
 
 	static modules: { [key: string]: IModule };
 
-	static handleRegex = /handle: (?<handle>.*)/;
+	static handleRegex = /handle: (?<handle>.*)/i;
 
-	static paramsRegex = /handle: (?<handle>.*)([.]{1}(?<method>[a-zA-Z]*)([(](?<params>["].*["])[)])?)/;
+	static paramsRegex = /handle: (?<handle>.*)([.]{1}(?<method>[a-zA-Z]*)([(](?<params>["].*["])[)])?)/i;
 	
-	static messageRegex = /response: (?<message>.*)/;
+	static messageRegex = /response: (?<message>.*)/i;
 
 	static async initialize() {
 		Omni.modules = {};
@@ -137,12 +137,14 @@ export class Omni {
 				const handle = handleMatch?.groups?.handle;
 
 				if (!handle) {
-					const tts = await Eden.tts('Could not find handle');
+					//const tts = await Eden.tts('Could not find handle');
 
 					console.log(responseText);
 
 					// send it to ipc
-					BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
+					//BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
+
+					Eden.say(responseText);
 
 					return;
 				}
@@ -183,7 +185,7 @@ export class Omni {
 
 				let tts: string;
 
-				if (method) {
+				if (method && mod[method]) {
 					console.log(`Found method: ${method}`);
 
 					const paramsArray = params ? params.split(', ').map(param => {

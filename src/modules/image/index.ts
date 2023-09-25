@@ -8,7 +8,9 @@ export class ImageModule implements IModule {
 	handle = 'image';
 	description = 'Module for managing images';
 
-	async generateImage(prompt: string) {
+	async generateImage(...prompts: string[]) {
+		const prompt = prompts.join('. ');
+		
 		const apiKey = await settings.get('key');
 
 		const openai = new OpenAI({

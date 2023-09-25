@@ -17,7 +17,7 @@ export class FileControls implements IIPC {
 			buttonLabel: 'Save',
 			defaultPath: `~/Downloads/untitled.png`,
 			filters: [
-				{ name: 'Image', extensions: ['.png'] },
+				{ name: 'Image', extensions: ['png'] },
 				{ name: 'All Files', extensions: ['*'] }
 			]
 		});

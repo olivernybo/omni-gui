@@ -18,12 +18,12 @@ export class Eden {
 				language: 'en-US',
 				option: 'MALE',
 				settings: {
-					microsoft: 'en-US-EricNeural',
+					microsoft: 'en-US-CoraNeural',
 				},
-				rate: 0,
+				rate: '10',
 				pitch: 0,
 				volume: 0,
-				sampling_rate: 0,
+				sampling_rate: '200000',
 				audio_format: 'wav',
 				response_as_dict: false,
 			})
