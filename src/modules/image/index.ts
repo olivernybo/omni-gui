@@ -18,7 +18,7 @@ export class ImageModule implements IModule {
 		const image = await openai.images.generate({
 			prompt,
 			n: 1,
-			size: '256x256'
+			size: '1024x1024'
 		});
 
 		const imageUrl = image.data[0].url;

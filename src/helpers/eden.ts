@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import settings from 'electron-settings';
+import { BrowserWindow } from 'electron';
 
 export class Eden {
 	static async tts(text): Promise<string> {
@@ -31,5 +32,11 @@ export class Eden {
 		const json = await response.json();
 
 		return json[0].audio_resource_url;
+	}
+
+	static async say(text) {
+		const link = await Eden.tts(text);
+
+		BrowserWindow.getFocusedWindow().webContents.send('tts', link);
 	}
 }

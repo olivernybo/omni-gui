@@ -2,13 +2,15 @@ import { ipcMain } from 'electron';
 
 import { IIPC } from '../interfaces/IIPC';
 import { AppControls } from './appControls';
-import { Settings } from './settings';
+import { SettingsControls } from './settingsControls';
 import { OmniControls } from './omniControls';
+import { FileControls } from './fileControls';
 
 export const setup = () => {
 	register(new AppControls());
-	register(new Settings());
+	register(new SettingsControls());
 	register(new OmniControls());
+	register(new FileControls());
 };
 
 const register = (ipc: IIPC) => {

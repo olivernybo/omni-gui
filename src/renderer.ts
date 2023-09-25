@@ -83,9 +83,17 @@ ipcRenderer.on('tts', (event, link) => {
 	audio.play();
 });
 
-ipcRenderer.on('image', (event, link) => {
-	Swal.fire({
+ipcRenderer.on('image', async (event, link) => {
+	const result = await Swal.fire({
 		title: 'Generated Image',
 		imageUrl: link,
+		imageHeight: 256,
+		showCancelButton: true,
+		confirmButtonText: 'Download',
+		cancelButtonText: 'Close',
 	});
+
+	if (result.isConfirmed) {
+		ipcRenderer.invoke('file:download', link);
+	}
 });
