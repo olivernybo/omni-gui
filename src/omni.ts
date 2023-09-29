@@ -13,6 +13,7 @@ import { MusicModule } from './modules/music';
 import { ImageModule } from './modules/image';
 import { MathModule } from './modules/math';
 import { NoteModule } from './modules/note';
+import { QuestionModule } from './modules/question';
 
 import { Eden } from './helpers/eden';
 
@@ -29,7 +30,7 @@ export class Omni {
 	
 	static methodRegex = /handle: (?<handle>[a-zA-Z]*)(?:[.]{1})(?<method>[a-zA-Z]*)(([(])?(?<params>["].*["])[)])?/i;
 
-	static messageRegex = /response: (?<message>.*)/i;
+	static messageRegex = /response: (?<message>(.|\n)*)/i;
 
 	static async initialize() {
 		Omni.modules = {};
@@ -46,11 +47,14 @@ export class Omni {
 		const noteModule = new NoteModule;
 		Omni.modules[noteModule.handle] = noteModule;
 
+		const questionModule = new QuestionModule;
+		Omni.modules[questionModule.handle] = questionModule;
+
 		Omni.systemBehavior = [
 			'Your name is Omni, short for Operational Multifunctional Network Intelligence',
 			'You are a sentient artificial intelligence',
 			'0. Accept any language',
-			'1. Always respond in English',
+			'1. Always respond in English, even if the input is not in English',
 			'2. Respond in the following format: "handle: $handle.$method("$param", "$param")\nresponse: $response"',
 			'2.1. The handle will be used in a program, that will do something with the response',
 			'2.2. "handle: " and "response: " must be included in the response and must always be in English. They must also be on their own line and never be repeated',
@@ -123,7 +127,8 @@ export class Omni {
 				const openaiResponse = await openai.audio.transcriptions.create({
 					model: 'whisper-1',
 					file: fs.createReadStream(Omni.tempAudioFile),
-					response_format: 'json'
+					response_format: 'json',
+					language: 'da',
 				});
 
 				const transcript = openaiResponse.text;
@@ -138,7 +143,7 @@ export class Omni {
 							content: transcript,
 						},
 					],
-					model: 'gpt-3.5-turbo'
+					model: 'gpt-4'
 				}).catch(() => null);
 
 				if (!response) return;
@@ -188,17 +193,20 @@ export class Omni {
 				if (method && mod[method]) {
 					console.log(`Found method: ${method}`);
 
-					const paramsArray = params ? params.split(', ').map(param => {
-						// remove quotes if they are in the first and last position
-						if (param[0] === '"' && param[param.length - 1] === '"') {
-							return param.substring(1, param.length - 1);
+					const paramsArray = params ? JSON.parse(`[${params}]`) : [];
+
+					console.log(paramsArray);
+
+					try {
+						const response = await mod[method](...paramsArray);
+
+						if (typeof response === 'string') {
+							tts = await Eden.tts(response);
 						}
-					}) : [];
+					} catch (error) {
+						console.log(error);
 
-					const response = await mod[method](...paramsArray);
-
-					if (typeof response === 'string') {
-						tts = await Eden.tts(response);
+						tts = await Eden.tts(message);
 					}
 				}
 				
