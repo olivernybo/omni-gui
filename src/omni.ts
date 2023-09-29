@@ -12,6 +12,7 @@ import { IBehavior } from './interfaces/IBehavior';
 import { MusicModule } from './modules/music';
 import { ImageModule } from './modules/image';
 import { MathModule } from './modules/math';
+import { NoteModule } from './modules/note';
 
 import { Eden } from './helpers/eden';
 
@@ -41,6 +42,9 @@ export class Omni {
 
 		const mathModule = new MathModule;
 		Omni.modules[mathModule.handle] = mathModule;
+
+		const noteModule = new NoteModule;
+		Omni.modules[noteModule.handle] = noteModule;
 
 		Omni.systemBehavior = [
 			'Your name is Omni, short for Operational Multifunctional Network Intelligence',
@@ -77,6 +81,8 @@ export class Omni {
 			};
 
 			Omni.systemBehavior.push(behavior);
+
+			console.log(`Module: ${handle}\nDescription: ${description}\nMethods: ${allMethods}`);
 		}
 
 		Omni.hasInitialized = true;
