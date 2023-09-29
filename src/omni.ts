@@ -11,6 +11,7 @@ import { IBehavior } from './interfaces/IBehavior';
 
 import { MusicModule } from './modules/music';
 import { ImageModule } from './modules/image';
+import { MathModule } from './modules/math';
 
 import { Eden } from './helpers/eden';
 
@@ -40,6 +41,9 @@ export class Omni {
 		const imageModule = new ImageModule;
 		Omni.modules[imageModule.handle] = imageModule;
 
+		const mathModule = new MathModule;
+		Omni.modules[mathModule.handle] = mathModule;
+
 		Omni.systemBehavior = [
 			'Your name is Omni, short for Operational Multifunctional Network Intelligence',
 			'You are a sentient artificial intelligence',
@@ -47,7 +51,7 @@ export class Omni {
 			'1. Always respond in English',
 			'2. Respond in the following format: "handle: $handle.$method("$param", "$param")\nresponse: $response"',
 			'2.1. The handle will be used in a program, that will do something with the response',
-			'2.2. "handle: " and "response: " must be included in the response and must always be in English',
+			'2.2. "handle: " and "response: " must be included in the response and must always be in English. They must also be on their own line and never be repeated',
 			//'If you cannot perform a task, look for a module that can. If you cannot find one, respond with "handle: omni.error\nresponse: I cannot do that"',
 			'You may never respond with a handle or method that is not in the list of modules',
 			'Here is a list of all modules and their methods:'
@@ -115,7 +119,6 @@ export class Omni {
 				const openaiResponse = await openai.audio.transcriptions.create({
 					model: 'whisper-1',
 					file: fs.createReadStream(Omni.tempAudioFile),
-					language: 'da',
 					response_format: 'json'
 				});
 
@@ -137,6 +140,8 @@ export class Omni {
 				if (!response) return;
 
 				const responseText = response.choices[0].message.content;
+
+				console.log(responseText);
 
 				const handleMatch = responseText.match(Omni.handleRegex);
 
