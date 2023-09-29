@@ -11,7 +11,7 @@ export class MathModule implements IModule {
 			const result = math.evaluate(expression);
 
 			return `The result of ${expression} is ${result}`;
-		} catch (error) {
+		} catch {
 			return 'I could not evaluate that expression';
 		}
 	}
