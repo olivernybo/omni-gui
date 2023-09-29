@@ -1,10 +1,9 @@
 import fs from 'fs';
 
-import { BrowserWindow, dialog, ipcMain } from 'electron';
+import { BrowserWindow } from 'electron';
 import settings from 'electron-settings';
 
 import OpenAI from 'openai';
-import Whisper from 'whisper-nodejs';
 import Microphone from 'node-microphone';
 
 import { IModule } from './interfaces/IModule';
@@ -16,7 +15,8 @@ import { ImageModule } from './modules/image';
 import { Eden } from './helpers/eden';
 
 export class Omni {
-	static tempAudioFile = 'test.wav';
+	static tempAudioFile = 'temp.wav';
+
 	static microphone = new Microphone();
 
 	static systemBehavior: IBehavior[];
@@ -88,7 +88,6 @@ export class Omni {
 		if (isActive) {
 			const stream = Omni.microphone.startRecording();
 	
-			// if test.wav exists, delete it
 			if (fs.existsSync(Omni.tempAudioFile)) {
 				fs.unlinkSync(Omni.tempAudioFile);
 			}
@@ -98,22 +97,29 @@ export class Omni {
 			Omni.microphone.stopRecording();
 	
 			const key = await settings.get('key');
-	
-			const whisper = new Whisper(key);
+
+			const openai = new OpenAI({
+				apiKey: key.toString(),
+			});
 	
 			if (isTranslating) {
-				const translation = await whisper.translate(Omni.tempAudioFile, 'whisper-1', 'en');
-
-				const tts = await Eden.tts(translation);
-
-				// send it to ipc
-				BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
-			} else {
-				const transcript = await whisper.transcribe(Omni.tempAudioFile, 'whisper-1');
-
-				const openai = new OpenAI({
-					apiKey: key.toString(),
+				const translationResponse = await openai.audio.transcriptions.create({
+					model: 'whisper-1',
+					file: fs.createReadStream(Omni.tempAudioFile),
+					language: 'en',
+					response_format: 'json'
 				});
+
+				await Eden.say(translationResponse.text);
+			} else {
+				const openaiResponse = await openai.audio.transcriptions.create({
+					model: 'whisper-1',
+					file: fs.createReadStream(Omni.tempAudioFile),
+					language: 'da',
+					response_format: 'json'
+				});
+
+				const transcript = openaiResponse.text;
 
 				console.log(transcript);
 
@@ -137,12 +143,7 @@ export class Omni {
 				const handle = handleMatch?.groups?.handle;
 
 				if (!handle) {
-					//const tts = await Eden.tts('Could not find handle');
-
 					console.log(responseText);
-
-					// send it to ipc
-					//BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
 
 					Eden.say(responseText);
 
@@ -160,12 +161,9 @@ export class Omni {
 				const message = messageMatch?.groups?.message;
 
 				if (!handle || !message) {
-					const tts = await Eden.tts('Could not find handle, or message');
-
 					console.log(responseText);
 
-					// send it to ipc
-					BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
+					await Eden.say('Could not find handle, or message');
 
 					return;
 				}
