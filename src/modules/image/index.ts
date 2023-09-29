@@ -6,7 +6,7 @@ import { IModule } from '../../interfaces/IModule';
 
 export class ImageModule implements IModule {
 	handle = 'image';
-	description = 'Module for managing images';
+	description = 'Module for managing images. The generateImage method will generate an image based on the prompt. It must be a many descriptive keywords.';
 
 	async generateImage(...prompts: string[]) {
 		const prompt = prompts.join('. ');

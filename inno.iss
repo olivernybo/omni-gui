@@ -35,7 +35,7 @@ Name: "danish"; MessagesFile: "compiler:Languages\Danish.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "out\*"; DestDir: "{app}"; Excludes: "**\Output\**,**\src\**,**\Log-*,**\Mod-*"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "out\*"; DestDir: "{app}"; Excludes: "Output\*"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
