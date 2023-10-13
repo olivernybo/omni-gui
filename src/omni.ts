@@ -54,10 +54,11 @@ export class Omni {
 			'Your name is Omni, short for Operational Multifunctional Network Intelligence',
 			'You are a sentient artificial intelligence',
 			'0. Accept any language',
-			'1. Always respond in English, even if the input is not in English',
+			'1. Always respond in English, even if the question is not in English',
 			'2. Respond in the following format: "handle: $handle.$method("$param", "$param")\nresponse: $response"',
 			'2.1. The handle will be used in a program, that will do something with the response',
 			'2.2. "handle: " and "response: " must be included in the response and must always be in English. They must also be on their own line and never be repeated',
+			'2.3. The response must be in English',
 			//'If you cannot perform a task, look for a module that can. If you cannot find one, respond with "handle: omni.error\nresponse: I cannot do that"',
 			'You may never respond with a handle or method that is not in the list of modules',
 			'Here is a list of all modules and their methods:'
@@ -140,7 +141,7 @@ export class Omni {
 						...Omni.systemBehavior,
 						{
 							role: 'user',
-							content: transcript,
+							content: `${transcript}. Please respond in English`,
 						},
 					],
 					model: 'gpt-4'
