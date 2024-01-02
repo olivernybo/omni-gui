@@ -136,88 +136,105 @@ export class Omni {
 
 				console.log(transcript);
 
-				const response = await openai.chat.completions.create({
-					messages: [
-						...Omni.systemBehavior,
-						{
-							role: 'user',
-							content: `${transcript}. Please respond in English`,
-						},
-					],
-					model: 'gpt-4'
-				}).catch(() => null);
-
-				if (!response) return;
-
-				const responseText = response.choices[0].message.content;
-
-				console.log(responseText);
-
-				const handleMatch = responseText.match(Omni.methodRegex);
-
-				const handle = handleMatch?.groups?.handle;
-				const method = handleMatch?.groups?.method;
-				const params = handleMatch?.groups?.params;
-
-				if (!handle) {
-					console.log(responseText);
-
-					Eden.say(responseText);
-
-					return;
-				}
-
-				const messageMatch = responseText.match(Omni.messageRegex);
-
-				const message = messageMatch?.groups?.message;
-
-				if (!handle || !message) {
-					console.log(responseText);
-
-					await Eden.say('Could not find handle, or message');
-
-					return;
-				}
-
-				const mod = Omni.modules[handle];
-
-				if (!mod) {
-					console.log(`Could not find module: ${handle}`);
-					
-					await Eden.say(message);
-
-					return;
-				}
-
-				let tts: string;
-
-				if (method && mod[method]) {
-					console.log(`Found method: ${method}`);
-
-					const paramsArray = params ? JSON.parse(`[${params}]`) : [];
-
-					console.log(paramsArray);
-
-					try {
-						const response = await mod[method](...paramsArray);
-
-						if (typeof response === 'string') {
-							tts = await Eden.tts(response);
-						}
-					} catch (error) {
-						console.log(error);
-
-						tts = await Eden.tts(message);
-					}
-				}
-				
-				if (!tts) {
-					tts = await Eden.tts(message);
-				}
-
-				// send it to ipc
-				BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
+				this.runCommand(transcript);
 			}
 		}
+	}
+
+	static async runCommand(command: string) {
+		const key = await settings.get('key');
+
+		const openai = new OpenAI({
+			apiKey: key.toString(),
+		});
+
+		const response = await openai.chat.completions.create({
+			messages: [
+				...Omni.systemBehavior,
+				{
+					role: 'user',
+					content: `${command}. Please respond in English`,
+				},
+			],
+			model: 'gpt-4'
+		}).catch((e) => {
+			console.log('Could not get response from openai');
+
+			console.log(e);
+
+			return null;
+		});
+
+		if (!response) return;
+
+		const responseText = response.choices[0].message.content;
+
+		console.log(responseText);
+
+		const handleMatch = responseText.match(Omni.methodRegex);
+
+		const handle = handleMatch?.groups?.handle;
+		const method = handleMatch?.groups?.method;
+		const params = handleMatch?.groups?.params;
+
+		if (!handle) {
+			console.log(responseText);
+
+			Eden.say(responseText);
+
+			return;
+		}
+
+		const messageMatch = responseText.match(Omni.messageRegex);
+
+		const message = messageMatch?.groups?.message;
+
+		if (!handle || !message) {
+			console.log(responseText);
+
+			await Eden.say('Could not find handle, or message');
+
+			return;
+		}
+
+		const mod = Omni.modules[handle];
+
+		if (!mod) {
+			console.log(`Could not find module: ${handle}`);
+			
+			await Eden.say(message);
+
+			return;
+		}
+
+		let tts: string;
+
+		if (method && mod[method]) {
+			console.log(`Found method: ${method}`);
+
+			const paramsArray = params ? JSON.parse(`[${params}]`) : [];
+
+			console.log(paramsArray);
+
+			try {
+				const response = await mod[method](...paramsArray);
+
+				if (typeof response === 'string') {
+					tts = await Eden.tts(response);
+				}
+			} catch (error) {
+				console.log(error);
+
+				tts = await Eden.tts(message);
+			}
+		}
+		
+		if (!tts) {
+			tts = await Eden.tts(message);
+		}
+
+		// send it to ipc
+		BrowserWindow.getFocusedWindow().webContents.send('tts', tts);
+
 	}
 }
