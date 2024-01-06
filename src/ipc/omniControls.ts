@@ -7,4 +7,8 @@ export class OmniControls implements IIPC {
 	async listen(_, isActive, isTranslating) {
 		Omni.listen(isActive, isTranslating);
 	}
+
+	async command(_, command) {
+		Omni.runCommand(command);
+	}
 }

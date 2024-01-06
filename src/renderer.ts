@@ -75,6 +75,18 @@ circle.addEventListener('click', () => {
 	ipcRenderer.invoke('omni:listen', isActive, isTranslating);
 });
 
+document.querySelector('#submit').addEventListener('click', async () => {
+	const input = document.querySelector('#input') as HTMLInputElement;
+
+	const text = input.value;
+
+	if (!text) {
+		return;
+	}
+
+	ipcRenderer.invoke('omni:command', text);
+});
+
 ipcRenderer.on('tts', (event, link) => {
 	const audio = new Audio();
 

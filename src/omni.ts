@@ -142,6 +142,10 @@ export class Omni {
 	}
 
 	static async runCommand(command: string) {
+		if (!Omni.hasInitialized) {
+			await Omni.initialize();
+		}
+		
 		const key = await settings.get('key');
 
 		const openai = new OpenAI({

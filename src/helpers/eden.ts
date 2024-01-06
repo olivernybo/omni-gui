@@ -37,6 +37,6 @@ export class Eden {
 	static async say(text) {
 		const link = await Eden.tts(text);
 
-		BrowserWindow.getFocusedWindow().webContents.send('tts', link);
+		BrowserWindow.getAllWindows()[0].webContents.send('tts', link);
 	}
 }
